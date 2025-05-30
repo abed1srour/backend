@@ -24,21 +24,22 @@ if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath);
 }
 
-// ✅ Full CORS Configuration
+// ✅ CORS Configuration for Vercel frontend
 const corsOptions = {
   origin: 'https://municipality-frontend-rho.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 };
 
-app.use(cors(corsOptions));             // Allow cross-origin from Vercel
-app.options('*', cors(corsOptions));   // Handle preflight requests
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle CORS preflight
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded images
+// Serve static uploaded images
 app.use('/uploads', express.static(uploadPath));
 
 // Routes
@@ -63,7 +64,7 @@ app.get('/', (req, res) => {
   res.send('🌍 Municipality Complaint Box Backend is running');
 });
 
-// Start the server
+// Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server started on port ${PORT}`);
 });
