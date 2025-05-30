@@ -16,7 +16,7 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const PORT = process.env.PORT || 5051;
+const PORT = process.env.PORT || 5000;
 
 // Ensure uploads folder exists
 const uploadPath = path.join(__dirname, 'uploads');
