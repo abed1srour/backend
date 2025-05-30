@@ -33,7 +33,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Handle CORS preflight
+app.options('*', cors(corsOptions)); 
 
 // Middleware
 app.use(express.json());
@@ -43,6 +43,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(uploadPath));
 
 // Routes
+console.log('✅ complaintRoutes mounted at /api/complaints');
+
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/block', blockRoutes);
@@ -63,6 +65,11 @@ app.get('/download/:filename', (req, res) => {
 app.get('/', (req, res) => {
   res.send('🌍 Municipality Complaint Box Backend is running');
 });
+app.use((req, res, next) => {
+  console.log(`❗ Unknown route: ${req.method} ${req.originalUrl}`);
+  res.status(404).json({ error: 'Not found' });
+});
+
 
 // Start server
 app.listen(PORT, () => {
