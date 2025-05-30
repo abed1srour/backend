@@ -9,10 +9,10 @@ const complaintRoutes = require('./routes/complaintRoutes');
 const authRoutes = require('./routes/authRoutes');
 const blockRoutes = require('./routes/blockRoutes');
 
-// Load environment variables
+// Load env variables
 dotenv.config();
 
-// Connect to MongoDB
+// Connect to DB
 connectDB();
 
 const app = express();
@@ -24,52 +24,50 @@ if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath);
 }
 
-// ✅ CORS Configuration for Vercel frontend
+// ✅ CORS config for Vercel
 const corsOptions = {
   origin: 'https://municipality-frontend-rho.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); 
+app.options('*', cors(corsOptions)); // Preflight
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static uploaded images
+// Static uploads
 app.use('/uploads', express.static(uploadPath));
 
-// Routes
-console.log('✅ complaintRoutes mounted at /api/complaints');
+// ✅ Debug log for route registration
+console.log('✅ Mounting routes...');
 
+// Routes
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/block', blockRoutes);
 
-// File download route
+// Image download
 app.get('/download/:filename', (req, res) => {
-  const filename = req.params.filename;
-  const file = path.join(uploadPath, filename);
-
-  res.download(file, filename, (err) => {
-    if (err) {
-      res.status(404).json({ error: 'File not found.' });
-    }
+  const file = path.join(uploadPath, req.params.filename);
+  res.download(file, err => {
+    if (err) res.status(404).json({ error: 'File not found.' });
   });
 });
 
-// Health check route
+// Health check
 app.get('/', (req, res) => {
   res.send('🌍 Municipality Complaint Box Backend is running');
 });
-app.use((req, res, next) => {
-  console.log(`❗ Unknown route: ${req.method} ${req.originalUrl}`);
+
+// Catch-all 404 logger
+app.use((req, res) => {
+  console.warn(`❗ Route not found: ${req.method} ${req.originalUrl}`);
   res.status(404).json({ error: 'Not found' });
 });
-
 
 // Start server
 app.listen(PORT, () => {
