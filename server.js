@@ -16,7 +16,7 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5050;
 
 // Ensure uploads folder exists
 const uploadPath = path.join(__dirname, 'uploads');
@@ -75,4 +75,5 @@ app.use((req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server started on port ${PORT}`);
 });
+
 
