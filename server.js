@@ -24,7 +24,7 @@ if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath);
 }
 
-// ✅ CORS config for Vercel
+// CORS configuration (for frontend on Vercel)
 const corsOptions = {
   origin: 'https://municipality-frontend-rho.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -33,7 +33,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Handle preflight requests
+app.options('*', cors(corsOptions));
 
 // Middleware
 app.use(express.json());
@@ -42,10 +42,10 @@ app.use(express.urlencoded({ extended: true }));
 // Serve uploaded images
 app.use('/uploads', express.static(uploadPath));
 
-// ✅ Debug log for route registration
+// Debug log for route registration
 console.log('✅ Mounting routes...');
 
-// Routes
+// API Routes
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/block', blockRoutes);
@@ -60,12 +60,12 @@ app.get('/download/:filename', (req, res) => {
   });
 });
 
-// ✅ Health check route BEFORE 404
+// Health check route
 app.get('/', (req, res) => {
   res.send('🌍 Municipality Complaint Box Backend is running');
 });
 
-// 404 Catch-all
+// 404 catch-all
 app.use((req, res) => {
   console.warn(`❗ Route not found: ${req.method} ${req.originalUrl}`);
   res.status(404).json({ error: 'Not found' });
@@ -75,5 +75,3 @@ app.use((req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server started on port ${PORT}`);
 });
-
-
