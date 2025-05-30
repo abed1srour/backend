@@ -9,10 +9,10 @@ const complaintRoutes = require('./routes/complaintRoutes');
 const authRoutes = require('./routes/authRoutes');
 const blockRoutes = require('./routes/blockRoutes');
 
-// Load env variables
+// Load environment variables
 dotenv.config();
 
-// Connect to DB
+// Connect to MongoDB
 connectDB();
 
 const app = express();
@@ -33,13 +33,13 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Preflight
+app.options('*', cors(corsOptions)); // Handle preflight requests
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static uploads
+// Serve uploaded images
 app.use('/uploads', express.static(uploadPath));
 
 // ✅ Debug log for route registration
@@ -50,20 +50,22 @@ app.use('/api/complaints', complaintRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/block', blockRoutes);
 
-// Image download
+// Image download route
 app.get('/download/:filename', (req, res) => {
   const file = path.join(uploadPath, req.params.filename);
-  res.download(file, err => {
-    if (err) res.status(404).json({ error: 'File not found.' });
+  res.download(file, (err) => {
+    if (err) {
+      res.status(404).json({ error: 'File not found.' });
+    }
   });
 });
 
-// Health check
+// ✅ Health check route BEFORE 404
 app.get('/', (req, res) => {
   res.send('🌍 Municipality Complaint Box Backend is running');
 });
 
-// Catch-all 404 logger
+// 404 Catch-all
 app.use((req, res) => {
   console.warn(`❗ Route not found: ${req.method} ${req.originalUrl}`);
   res.status(404).json({ error: 'Not found' });
