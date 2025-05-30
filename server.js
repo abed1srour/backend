@@ -26,8 +26,11 @@ if (!fs.existsSync(uploadPath)) {
 
 // Middleware
 app.use(cors({
-  origin: 'https://municipality-frontend-rho.vercel.app'
+  origin: 'https://municipality-frontend-rho.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // for form-data
 
