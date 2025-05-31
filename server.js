@@ -26,11 +26,12 @@ if (!fs.existsSync(uploadPath)) {
 
 // CORS configuration (for frontend on Vercel)
 const corsOptions = {
-  origin: 'https://municipality-frontend-rho.vercel.app',
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
 };
+
+
 
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
